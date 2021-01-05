@@ -1,6 +1,7 @@
 import cv2 as cv
 import os
 import imutils
+import numpy as np
 
 
 def Image_Process(image_path):
@@ -27,19 +28,23 @@ def Image_Process(image_path):
 
     # Crop Image
     x, y, w, h = cv.boundingRect(biggest_contour)
-    cropped_image = copied_image[y:y + h, x:x + w]
+    x = int(x * ratio)
+    y = int(y * ratio)
+    w = int(w * ratio)
+    h = int(h * ratio)
+
+    cropped_image = source_image[y:y + h, x:x + w]
 
     cv.imshow(image_path, cropped_image)
-    # cv.waitKey(0)
+    cv.waitKey(0)
     cv.destroyAllWindows()
 
     # Save Image
-    directory_name = '../Result'
-    image_name = os.path.basename(image_path)
-    result_image_path = os.path.join(directory_name, image_name)
-
-    cv.imwrite(result_image_path, cropped_image)
-    print('[>] ' + result_image_path)
+    # directory_name = '../Result'
+    # image_name = os.path.basename(image_path)
+    # result_image_path = os.path.join(directory_name, image_name)
+    # cv.imwrite(result_image_path, cropped_image)
+    # print('[>] ' + result_image_path)
 
 
 class PrettierPage:
