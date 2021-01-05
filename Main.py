@@ -45,6 +45,7 @@ def Image_Process(image_path):
     result_image_path = os.path.join(directory_name, image_name)
     cv.imwrite(result_image_path, cropped_image)
     print('[>] ' + result_image_path)
+    print("--------------------------")
 
 
 class PrettierPage:
