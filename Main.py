@@ -15,7 +15,7 @@ def Image_Process(image_path):
     grayscale_image = cv.cvtColor(copied_image, cv.COLOR_BGR2GRAY)
     grayscale_image = cv.GaussianBlur(grayscale_image, (5, 5), 0)
     ret, grayscale_image = cv.threshold(grayscale_image, 200, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
-    # cv.imshow("grayscale_image", grayscale_image)
+    cv.imshow("grayscale_image", grayscale_image)
 
     # Find Contours
     contours, hierarchy = cv.findContours(grayscale_image, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
@@ -27,15 +27,14 @@ def Image_Process(image_path):
     cv.imshow('contour_image', contour_image)
 
     # Crop Image
-    x, y, w, h = cv.boundingRect(biggest_contour)
-    x = int(x * ratio)
-    y = int(y * ratio)
-    w = int(w * ratio)
-    h = int(h * ratio)
+    x, y, w, h = cv.boundingRect(biggest_contour) * np.array([ratio, ratio, ratio, ratio])
+    x = int(x)
+    y = int(y)
+    w = int(w)
+    h = int(h)
+    # cropped_image = source_image[y: y + h, x: x + w]
 
-    cropped_image = source_image[y:y + h, x:x + w]
-
-    cv.imshow(image_path, cropped_image)
+    # cv.imshow(image_path, cropped_image)
     cv.waitKey(0)
     cv.destroyAllWindows()
 
