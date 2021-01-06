@@ -19,5 +19,5 @@ class Watermark:
 
 
 if __name__ == '__main__':
-    image_path: str = '../Images/0001-055.TIF'
+    image_path = '../Images/0001-055.TIF'
     Watermark(image_path).Encoding()

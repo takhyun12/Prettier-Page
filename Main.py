@@ -15,29 +15,30 @@ def Image_Process(image_path):
     grayscale_image = cv.cvtColor(copied_image, cv.COLOR_BGR2GRAY)
     grayscale_image = cv.GaussianBlur(grayscale_image, (5, 5), 0)
     ret, grayscale_image = cv.threshold(grayscale_image, 200, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
-    cv.imshow("grayscale_image", grayscale_image)
+    # cv.imshow("grayscale_image", grayscale_image)
 
-    # Apply Morph Close
+    # Apply Morph Open (Erosion(1 iter) => open(Erosion => Dilation))
     kernel = cv.getStructuringElement(cv.MORPH_RECT, (5, 5))
-    morph_closed_image = cv.morphologyEx(grayscale_image, cv.MORPH_CLOSE, kernel)
-    cv.imshow("morph_closed_image", morph_closed_image)
+    grayscale_image = cv.erode(grayscale_image, kernel, iterations=1)
+    morph_opened_image = cv.morphologyEx(grayscale_image, cv.MORPH_OPEN, kernel)
+    # cv.imshow("morph_opened_image", morph_opened_image)
 
     # Find Contours
-    contours, hierarchy = cv.findContours(morph_closed_image, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv.findContours(morph_opened_image, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
     contour_sizes = [(cv.contourArea(contour), contour) for contour in contours]
     biggest_contour = max(contour_sizes, key=lambda x: x[0])[1]
 
-    contour_image = copied_image.copy()
-    cv.drawContours(contour_image, [biggest_contour], 0, (0, 0, 255), 2)
-    cv.imshow('contour_image', contour_image)
+    # contour_image = copied_image.copy()
+    # cv.drawContours(contour_image, [biggest_contour], 0, (0, 0, 255), 2)
+    # cv.imshow('contour_image', contour_image)
 
     # Crop Image with source_image
     x, y, w, h = map(int, cv.boundingRect(biggest_contour) * np.array([ratio, ratio, ratio, ratio]))
     cropped_image = source_image[y: y + h, x: x + w]
 
-    cv.imshow(image_path, cropped_image)
-    cv.waitKey(0)
-    cv.destroyAllWindows()
+    # cv.imshow(image_path, cropped_image)
+    # cv.waitKey(0)
+    # cv.destroyAllWindows()
 
     # Save Image
     directory_name = '../Result'
@@ -45,7 +46,6 @@ def Image_Process(image_path):
     result_image_path = os.path.join(directory_name, image_name)
     cv.imwrite(result_image_path, cropped_image)
     print('[>] ' + result_image_path)
-    print("--------------------------")
 
 
 class PrettierPage:
@@ -70,5 +70,5 @@ class PrettierPage:
 
 
 if __name__ == '__main__':
-    PrettierPage.Process_File('../Images/0001-055.TIF')
-    # PrettierPage.Process_Directory('../Images')
+    # PrettierPage.Process_File('../Images/0001-054.TIF')
+    PrettierPage.Process_Directory('../Images')
