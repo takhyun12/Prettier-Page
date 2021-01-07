@@ -47,17 +47,16 @@ class PrettierPage:
 
         contour_image = copied_image.copy()
         cv.drawContours(contour_image, [biggest_contour], 0, (0, 0, 255), 2)
-        cv.imshow('contour_image', contour_image)
+        # cv.imshow('contour_image', contour_image)
 
         # Crop Image with source_image
         x, y, w, h = map(int, cv.boundingRect(biggest_contour) * np.array([self.source_ratio, self.source_ratio,
                                                                            self.source_ratio, self.source_ratio]))
         result_image = self.source_image[y: y + h, x: x + w]
 
-
-        cv.imshow(self.image_path, result_image)
-        cv.waitKey(0)
-        cv.destroyAllWindows()
+        # cv.imshow(self.image_path, result_image)
+        # cv.waitKey(0)
+        # cv.destroyAllWindows()
 
         # Save Image
         directory_name = '../Result'
