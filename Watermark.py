@@ -64,20 +64,20 @@ class Watermark:
 
     def decoding(self, source_image_path, encoded_image):
         # Read Image
-        original_image = cv.imread(source_image_path)
+        source_image = cv.imread(source_image_path)
 
-        original_height, original_width, _ = original_image.shape
-        print('original_height : ', original_height)
-        print('original_width : ', original_width)
+        source_height, source_width, _ = source_image.shape
+        print('original_height : ', source_height)
+        print('original_width : ', source_width)
 
         encoded_height, encoded_width, _ = encoded_image.shape
 
         # Convert image to frequency area with Fast Fourier Transform (image -> frequency)
-        original_frequency = np.fft.fft2(original_image)
+        source_frequency = np.fft.fft2(source_image)
         encoded_frequency = np.fft.fft2(encoded_image)
 
         # Convert frequency area to image (frequency -> image)
-        watermark_layer = (original_frequency - encoded_frequency) / self.alpha
+        watermark_layer = (source_frequency - encoded_frequency) / self.alpha
         watermark_layer = np.real(watermark_layer).astype(np.uint8)
 
         # Get random seed
@@ -96,7 +96,7 @@ class Watermark:
             for x in range(encoded_width):
                 result_image[y, x] = watermark_layer[y_random_indices[y], x_random_indices[x]]
 
-        cv.imshow('original image', original_image)
+        cv.imshow('original image', source_image)
         cv.imshow('target image', encoded_image)
         cv.imshow('watermark layer', watermark_layer)
         cv.imshow('result image', result_image)
