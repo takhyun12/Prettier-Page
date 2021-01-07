@@ -2,7 +2,7 @@ import cv2 as cv
 import numpy as np
 import random
 import time
-import matplotlib.pyplot as plt
+
 
 class Watermark:
     def __init__(self):
@@ -11,7 +11,7 @@ class Watermark:
         self.random_seed = 2021
         self.alpha = 5
 
-    def Encoding(self, image_path):
+    def encoding(self, image_path):
         start_time = time.time()
 
         # Read Image
@@ -48,45 +48,40 @@ class Watermark:
         result_image = np.real(result_image)
         result_image = result_image.astype(np.uint8)
 
-        cv.imwrite(self.result_image_path, result_image)
-
         # Show elapsed time
         end_time = time.time()
-        print('Encoding elapsed time : ', end_time - start_time)
-        print('')
+        print('Encoding elapsed time : ', end_time - start_time, '\n')
 
         # Visualization
         cv.imshow('source_image', source_image)
         cv.imshow('watermark', self.watermark_image)
         cv.imshow('watermark_layer', watermark_layer)
         cv.imshow('result_image', result_image)
-        cv.imshow('compare_image', result_image - source_image)
         cv.waitKey(0)
         cv.destroyAllWindows()
 
-    def Decoding(self, original_path, target_path):
+        return result_image
+
+    def decoding(self, source_image_path, encoded_image):
         # Read Image
-        original_image = cv.imread(original_path)
-        target_image = cv.imread(target_path)
+        original_image = cv.imread(source_image_path)
 
         original_height, original_width, _ = original_image.shape
         print('original_height : ', original_height)
         print('original_width : ', original_width)
 
-        target_height, target_width, _ = target_image.shape
+        encoded_height, encoded_width, _ = encoded_image.shape
 
         # Convert image to frequency area with Fast Fourier Transform (image -> frequency)
         original_frequency = np.fft.fft2(original_image)
-        target_frequency = np.fft.fft2(target_image)
+        encoded_frequency = np.fft.fft2(encoded_image)
 
         # Convert frequency area to image (frequency -> image)
-        watermark_layer = (original_frequency - target_frequency) / self.alpha
+        watermark_layer = (original_frequency - encoded_frequency) / self.alpha
         watermark_layer = np.real(watermark_layer).astype(np.uint8)
 
-        watermark_height, watermark_width, _ = watermark_layer.shape
-
         # Get random seed
-        y_random_indices, x_random_indices = list(range(target_height)), list(range(target_width))
+        y_random_indices, x_random_indices = list(range(encoded_height)), list(range(encoded_width))
         random.seed(self.random_seed)
         random.shuffle(x_random_indices)
         random.shuffle(y_random_indices)
@@ -96,13 +91,13 @@ class Watermark:
 
         # Restore watermark
         result_image = np.zeros(watermark_layer.shape, dtype=np.uint8)
-        for y in range(target_height):
-            for x in range(target_width):
+
+        for y in range(encoded_height):
+            for x in range(encoded_width):
                 result_image[y, x] = watermark_layer[y_random_indices[y], x_random_indices[x]]
 
-
         cv.imshow('original image', original_image)
-        cv.imshow('target image', target_image)
+        cv.imshow('target image', encoded_image)
         cv.imshow('watermark layer', watermark_layer)
         cv.imshow('result image', result_image)
         cv.waitKey(0)
@@ -110,9 +105,7 @@ class Watermark:
 
 
 if __name__ == '__main__':
-    image_path = '../Watermark/jennie.jpg'
-    Watermark().Encoding(image_path)
+    source_path = '../Watermark/jennie.jpg'
 
-    original_path = '../Watermark/jennie.jpg'
-    target_path = '../Watermark/result.jpg'
-    Watermark().Decoding(original_path, target_path)
+    protected_image = Watermark().encoding(source_path)
+    Watermark().decoding(source_path, protected_image)
