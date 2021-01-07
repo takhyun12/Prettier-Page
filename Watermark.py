@@ -16,11 +16,12 @@ class Watermark:
 
         # Read Image
         source_image = cv.imread(image_path)
+
         source_height, source_width, _ = source_image.shape
         watermark_height, watermark_width, _ = self.watermark_image.shape
 
-        print('source height : ', source_height)
-        print('source_width : ', source_width)
+        print('source height : ', source_height, ', source_width : ', source_width)
+        print('watermark height : ', watermark_height, ', watermark width : ', watermark_width)
 
         # Convert image to frequency area with Fast Fourier Transform (image -> frequency)
         source_frequency = np.fft.fft2(source_image)
