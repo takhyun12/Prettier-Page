@@ -54,6 +54,7 @@ class PrettierPage:
                                                                            self.source_ratio, self.source_ratio]))
         result_image = self.source_image[y: y + h, x: x + w]
 
+
         # cv.imshow(image_path, cropped_image)
         # cv.waitKey(0)
         # cv.destroyAllWindows()
