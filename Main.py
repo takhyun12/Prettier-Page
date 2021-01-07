@@ -45,9 +45,9 @@ class PrettierPage:
         contour_sizes = [(cv.contourArea(contour), contour) for contour in contours]
         biggest_contour = max(contour_sizes, key=lambda value: value[0])[1]
 
-        # contour_image = copied_image.copy()
-        # cv.drawContours(contour_image, [biggest_contour], 0, (0, 0, 255), 2)
-        # cv.imshow('contour_image', contour_image)
+        contour_image = copied_image.copy()
+        cv.drawContours(contour_image, [biggest_contour], 0, (0, 0, 255), 2)
+        cv.imshow('contour_image', contour_image)
 
         # Crop Image with source_image
         x, y, w, h = map(int, cv.boundingRect(biggest_contour) * np.array([self.source_ratio, self.source_ratio,
