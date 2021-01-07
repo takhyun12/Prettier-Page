@@ -22,20 +22,20 @@ class PrettierPage:
         # Image Resizing
         copied_image = self.source_image.copy()
         copied_image = imutils.resize(copied_image, height=500)
-        # cv.imshow("copied_image", copied_image)
+        cv.imshow("copied_image", copied_image)
 
         # Apply GaussianBlur + OTSU-Thresholding
         grayscale_image = cv.cvtColor(copied_image, cv .COLOR_BGR2GRAY)
         grayscale_image = cv.GaussianBlur(grayscale_image, (5, 5), 0)
-        # cv.imshow("blur_image", grayscale_image)
+        cv.imshow("blur_image", grayscale_image)
 
         ret, grayscale_image = cv.threshold(grayscale_image, 200, 255, cv.THRESH_BINARY + cv.THRESH_OTSU)
-        # cv.imshow("threshold_image", grayscale_image)
+        cv.imshow("threshold_image", grayscale_image)
 
         # Apply Morph Open Make_Pretty(Erosion(1 iter) => open(Erosion => Dilation))
         kernel = cv.getStructuringElement(cv.MORPH_RECT, (5, 5))
         grayscale_image = cv.erode(grayscale_image, kernel, iterations=1)
-        # cv.imshow("eroded_image", grayscale_image)
+        cv.imshow("eroded_image", grayscale_image)
 
         morph_opened_image = cv.morphologyEx(grayscale_image, cv.MORPH_OPEN, kernel)
         cv.imshow("morph_opened_image", morph_opened_image)
@@ -47,7 +47,7 @@ class PrettierPage:
 
         contour_image = copied_image.copy()
         cv.drawContours(contour_image, [biggest_contour], 0, (0, 0, 255), 2)
-        # cv.imshow('contour_image', contour_image)
+        cv.imshow('contour_image', contour_image)
 
         # Crop Image with source_image
         x, y, w, h = map(int, cv.boundingRect(biggest_contour) * np.array([self.source_ratio, self.source_ratio,
@@ -55,8 +55,8 @@ class PrettierPage:
         result_image = self.source_image[y: y + h, x: x + w]
 
         # cv.imshow(self.image_path, result_image)
-        # cv.waitKey(0)
-        # cv.destroyAllWindows()
+        cv.waitKey(0)
+        cv.destroyAllWindows()
 
         # Save Image
         directory_name = '../Result'
