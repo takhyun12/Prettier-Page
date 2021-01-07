@@ -55,9 +55,9 @@ class PrettierPage:
         result_image = self.source_image[y: y + h, x: x + w]
 
 
-        # cv.imshow(image_path, cropped_image)
-        # cv.waitKey(0)
-        # cv.destroyAllWindows()
+        cv.imshow(self.image_path, result_image)
+        cv.waitKey(0)
+        cv.destroyAllWindows()
 
         # Save Image
         directory_name = '../Result'
