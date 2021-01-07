@@ -22,7 +22,7 @@ class PrettierPage:
         # Image Resizing
         copied_image = self.source_image.copy()
         copied_image = imutils.resize(copied_image, height=500)
-        cv.imshow("copied_image", copied_image)
+        # cv.imshow("copied_image", copied_image)
 
         # Apply GaussianBlur + OTSU-Thresholding
         grayscale_image = cv.cvtColor(copied_image, cv .COLOR_BGR2GRAY)
@@ -55,8 +55,8 @@ class PrettierPage:
         result_image = self.source_image[y: y + h, x: x + w]
 
         # cv.imshow(image_path, cropped_image)
-        cv.waitKey(0)
-        cv.destroyAllWindows()
+        # cv.waitKey(0)
+        # cv.destroyAllWindows()
 
         # Save Image
         directory_name = '../Result'

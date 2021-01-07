@@ -13,9 +13,6 @@ class Watermark:
         source_height, source_width, _ = self.source_image.shape
         watermark_height, watermark_width, _ = self.watermark_image.shape
 
-        print(source_width, source_height)
-        print(watermark_width, watermark_height)
-
         cv.imshow('source_image', self.source_image)
         cv.imshow('watermark', self.watermark_image)
 
