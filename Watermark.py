@@ -116,11 +116,16 @@ class Watermark:
 
 if __name__ == '__main__':
     # Encoding
-    source_path = '../Watermark/cyberpunk.png'
+    source_path = '../Watermark/jennie.jpg'
     Watermark().encoding(source_path)
 
     # Decoding
     encoded_path = '../Watermark/result.png'
-    encoded_image = cv.imread(encoded_path)
-    Watermark().decoding(source_path, encoded_image)
+    encoding_image = cv.imread(encoded_path)
+    Watermark().decoding(source_path, encoding_image)
+
+    # Decoding (using not encoded image)
+    # not_encoded_path = '../Watermark/warped.png'
+    # not_encoded_image = cv.imread(not_encoded_path)
+    #  Watermark().decoding(source_path, not_encoded_image)
 
