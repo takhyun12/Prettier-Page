@@ -6,17 +6,17 @@ import time
 
 class Watermark:
     def __init__(self):
-        self.watermark_image = cv.imread('../Watermark/logo.png')
-        self.result_image_path = '../Watermark/result.jpg'
+        self.watermark_image = cv.imread('../Watermark/google_logo.png')
+        self.result_image_path = '../Watermark/result.png'
         self.random_seed = 2021
         self.alpha = 5
 
     def encoding(self, image_path):
+        # Code Start
         start_time = time.time()
 
         # Read Image
         source_image = cv.imread(image_path)
-
         source_height, source_width, _ = source_image.shape
         watermark_height, watermark_width, _ = self.watermark_image.shape
 
@@ -58,12 +58,16 @@ class Watermark:
         cv.imshow('watermark', self.watermark_image)
         cv.imshow('watermark_layer', watermark_layer)
         cv.imshow('result_image', result_image)
+
+        # Save and Close
+        cv.imwrite(self.result_image_path, result_image)
         cv.waitKey(0)
         cv.destroyAllWindows()
 
-        return result_image
-
     def decoding(self, source_image_path, encoded_image):
+        # Code Start
+        start_time = time.time()
+
         # Read Image
         source_image = cv.imread(source_image_path)
 
@@ -82,7 +86,7 @@ class Watermark:
         watermark_layer = np.real(watermark_layer).astype(np.uint8)
 
         # Get random seed
-        y_random_indices, x_random_indices = list(range(encoded_height)), list(range(encoded_width))
+        y_random_indices, x_random_indices = [list(range(encoded_height)), list(range(encoded_width))]
         random.seed(self.random_seed)
         random.shuffle(x_random_indices)
         random.shuffle(y_random_indices)
@@ -97,6 +101,11 @@ class Watermark:
             for x in range(encoded_width):
                 result_image[y, x] = watermark_layer[y_random_indices[y], x_random_indices[x]]
 
+        # Show elapsed time
+        end_time = time.time()
+        print('Encoding elapsed time : ', end_time - start_time, '\n')
+
+        # Visualization
         cv.imshow('original image', source_image)
         cv.imshow('target image', encoded_image)
         cv.imshow('watermark layer', watermark_layer)
@@ -106,7 +115,12 @@ class Watermark:
 
 
 if __name__ == '__main__':
-    source_path = '../Watermark/jennie.jpg'
+    # Encoding
+    source_path = '../Watermark/cyberpunk.png'
+    Watermark().encoding(source_path)
 
-    protected_image = Watermark().encoding(source_path)
-    Watermark().decoding(source_path, protected_image)
+    # Decoding
+    encoded_path = '../Watermark/result.png'
+    encoded_image = cv.imread(encoded_path)
+    Watermark().decoding(source_path, encoded_image)
+
