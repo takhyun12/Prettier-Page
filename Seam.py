@@ -1,69 +1,50 @@
-import cv2
+import cv2, os
 import numpy as np
-import random
-import matplotlib.pyplot as plt
 
-def Encoding():
-    img = cv2.imread('../Watermark/01.jpg')
-    img_wm = cv2.imread('../Watermark/logo2.png')
+# mouse callback handler
+def mouse_handler(event, x, y, flags, param):
+  if event == cv2.EVENT_LBUTTONUP:
+    img = ori_img.copy()
 
-    height, width, _ = img.shape
-    wm_height, wm_width, _ = img_wm.shape
+    src.append([x, y])
 
-    img_f = np.fft.fft2(img)
+    for xx, yy in src:
+      cv2.circle(img, center=(xx, yy), radius=5, color=(0, 255, 0), thickness=-1, lineType=cv2.LINE_AA)
 
-    y_random_indices, x_random_indices = list(range(height)), list(range(width))
-    random.seed(2021)
-    random.shuffle(x_random_indices)
-    random.shuffle(y_random_indices)
+    cv2.imshow('img', img)
 
-    random_wm = np.zeros(img.shape, dtype=np.uint8)
+    # perspective transform
+    if len(src) == 4:
+      src_np = np.array(src, dtype=np.float32)
 
-    for y in range(wm_height):
-        for x in range(wm_width):
-            random_wm[y_random_indices[y], x_random_indices[x]] = img_wm[y, x]
+      width = max(np.linalg.norm(src_np[0] - src_np[1]), np.linalg.norm(src_np[2] - src_np[3]))
+      height = max(np.linalg.norm(src_np[0] - src_np[3]), np.linalg.norm(src_np[1] - src_np[2]))
 
-    plt.figure(figsize=(16, 10))
+      dst_np = np.array([
+        [0, 0],
+        [width, 0],
+        [width, height],
+        [0, height]
+      ], dtype=np.float32)
 
-    alpha = 5
+      M = cv2.getPerspectiveTransform(src=src_np, dst=dst_np)
+      result = cv2.warpPerspective(ori_img, M=M, dsize=(width, height))
 
-    result_f = img_f + alpha * random_wm
+      result = cv2.resize(result, (1920, 1080))
 
-    result = np.fft.ifft2(result_f)
-    result = np.real(result)
-    result = result.astype(np.uint8)
+      cv2.imshow('result', result)
+      cv2.imwrite('../Watermark/warped.png', result)
 
-    cv2.imshow('result', result)
-    cv2.imwrite('../Watermark/result.jpg', result)
+# main
 
-    img = cv2.imread('../Watermark/01.jpg')
-    # result = cv2.imread('../Watermark/result.jpg')
+img_path = '../Watermark/jennie_captured.png'
+filename, ext = os.path.splitext(os.path.basename(img_path))
+ori_img = cv2.imread(img_path)
 
-    height, width, _ = img.shape
+src = []
 
-    img_ori_f = np.fft.fft2(img)
-    img_input_f = np.fft.fft2(result)
+cv2.namedWindow('img')
+cv2.setMouseCallback('img', mouse_handler)
 
-    alpha = 5
-    watermark = (img_ori_f - img_input_f) / alpha
-    watermark = np.real(watermark).astype(np.uint8)
-
-    plt.figure(figsize=(16, 10))
-    plt.imshow(watermark)
-
-    y_random_indices, x_random_indices = list(range(height)), list(range(width))
-    random.seed(2021)
-    random.shuffle(x_random_indices)
-    random.shuffle(y_random_indices)
-
-    result2 = np.zeros(watermark.shape, dtype=np.uint8)
-
-    for y in range(height):
-        for x in range(width):
-            result2[y, x] = watermark[y_random_indices[y], x_random_indices[x]]
-
-    cv2.imshow('result2', result2)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
-Encoding()
+cv2.imshow('img', ori_img)
+cv2.waitKey(0)
