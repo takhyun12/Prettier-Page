@@ -6,7 +6,7 @@ import time
 
 class Watermark:
     def __init__(self):
-        self.watermark_image = cv.imread('../Watermark/google_logo.png')
+        self.watermark_image = cv.imread('../Watermark/logo.png')
         self.result_image_path = '../Watermark/result.png'
         self.random_seed = 2021
         self.alpha = 5
