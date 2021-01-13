@@ -5,6 +5,7 @@ import imutils
 import numpy as np
 import time
 
+
 def findContoursInDark(copied_image):
     # Apply GaussianBlur + OTSU-Thresholding
     grayscale_image = cv.cvtColor(copied_image, cv.COLOR_BGR2GRAY)
@@ -30,6 +31,44 @@ def findContoursInDark(copied_image):
     return biggest_contour
 
 
+def findContoursInLight(copied_image):
+    grayscale_image = cv.cvtColor(copied_image, cv.COLOR_BGR2GRAY)
+    cv.imshow('grayscale_image', grayscale_image)
+
+    blur_image = cv.GaussianBlur(grayscale_image, (5, 5), 0)
+    cv.imshow('blur_image', blur_image)
+
+    canny = cv.Canny(blur_image, 30, 70)
+    cv.imshow('canny', canny)
+
+    # Apply Morph erode and open
+    kernel = cv.getStructuringElement(cv.MORPH_RECT, (5, 5))
+    dilatation_image = cv.dilate(canny, kernel, iterations=1)
+    cv.imshow('dilatation_image', dilatation_image)
+
+    erode_image = cv.erode(canny, kernel, iterations=1)
+    cv.imshow('erode_image', erode_image)
+
+    morph_closed_image = cv.morphologyEx(dilatation_image, cv.MORPH_CLOSE, kernel)
+    cv.imshow('morph_closed_image', morph_closed_image)
+
+    # Find Contours
+    contours, hierarchy = cv.findContours(morph_closed_image, cv.RETR_TREE, cv.CHAIN_APPROX_SIMPLE)
+    contour_sizes = [(cv.contourArea(contour), contour) for contour in contours]
+    biggest_contour = max(contour_sizes, key=lambda value: value[0])[1]
+
+    '''
+    contour_image = copied_image.copy()
+    cv.drawContours(contour_image, [biggest_contour], 0, (0, 0, 255), 2)
+    cv.imshow('contour_image', contour_image)
+    '''
+
+    cv.waitKey(0)
+    cv.destroyAllWindows()
+
+    return biggest_contour
+
+
 class PrettierPage:
     def __init__(self, image_path):
         self.source_image = cv.imread(image_path)  # type: cv
@@ -46,7 +85,8 @@ class PrettierPage:
         copied_image = imutils.resize(copied_image, height=500)
 
         # Find Contours
-        biggest_contour = findContoursInDark(copied_image)
+        # biggest_contour = findContoursInDark(copied_image)
+        biggest_contour = findContoursInLight(copied_image)
 
         # Crop Image with source_image
         x, y, w, h = map(int, cv.boundingRect(biggest_contour) * np.array([self.source_ratio, self.source_ratio,
