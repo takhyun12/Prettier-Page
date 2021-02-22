@@ -20,10 +20,19 @@ Status: 진행 중
 ---
 
 ### Requirement
+* Python 3.6
+* cv2
+* imutils
+* numpy
 
 ---
 
 ### Usage
+
+```
+$ Python Main.py
+
+```
 
 ---
 
