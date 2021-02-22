@@ -10,10 +10,10 @@ Author: Tackhyun Jung
 Status: 진행 중
 
 ### 사용된 기술
-OTSU-Thresholding
-Morph erode and open
-Find Contours
-Perspective Transform
+* OTSU-Thresholding
+* Morph erode and open
+* Find Contours
+* Perspective Transform
 
 ---
 
