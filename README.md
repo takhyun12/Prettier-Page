@@ -31,7 +31,6 @@ Status: 진행 중
 
 ```
 $ Python Main.py
-
 ```
 
 ---
