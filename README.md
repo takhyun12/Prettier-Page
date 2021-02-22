@@ -5,7 +5,6 @@ Author: Tackhyun Jung
 
 Status: 진행 중
 
-![goal](https://user-images.githubusercontent.com/41291493/108651563-62ee4200-7505-11eb-98ea-3161dfbd359b.png){: width="50" height="50"}
 
 ### 핵심목표
 1) OpenCV의 다양한 기술을 통해 여러 종류의 스캔 이미지나 영수증을 보기 좋게 가공해줌
